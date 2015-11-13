@@ -1,79 +1,24 @@
 # vim: set softtabstop=4 shiftwidth=4:
-
 SHELL = bash
-BIN = ./node_modules/.bin
-BRANCH?= $(shell git rev-parse --abbrev-ref HEAD)
-PUBLIC_REMOTE?= ""
-PRIVATE_REMOTE?= ""
-VERSION?=$(strip $(call get_current_version))
-RELEASE_TAG?=$(strip $(call get_next_version,$(BUMP),$(RC)))
-BUMP?=prerelease
-RC?=""
-
+BIN=./node_modules/.bin
 
 install link:
 	@npm $@
-	@npm shrinkwrap
-
 clean:
 	@npm cache clean
 	@rm -rf node_modules
+	@rm -rf dist
 
 test:
-	@$(BIN)/eslint .
-	@$(BIN)/mocha --reporter spec
+	@$(BIN)/eslint ./src && \
+	$(BIN)/mocha --compilers js:babel-core/register --require chai \
+		--source-maps \
+		--colors \
+		--bail \
+		--reporter spec ./src/**/*.spec.js
 
-define get_next_version
-	$(shell node -pe "require('./scripts/release.js').getNextVersion('$(1)','$(2)')")
-endef
+build:
+	@mkdir -p ./dist && \
+	$(BIN)/browserify ./src/index.js  -t babelify --outfile ./dist/index.js
 
-define get_current_version
-	$(shell node -pe "require('./scripts/release.js').getVersion()")
-endef
-
-define bump_version
-	echo "Bumping to version: $(1)" \
-	$(shell node -e "require('./scripts/release.js').bump('$(1)')")
-endef
-
-define tag
-	git commit -m "release version - $(1)" -- package.json && \
-	echo "Tagging release: $(1)" && \
-	git tag "$(1)" -m "release $(1)"
-endef
-
-define branch
-	BRANCH="rc-$(1)" && \
-	git checkout -b $$BRANCH
-endef
-
-define publish
-	echo "git push --tags $(PRIVATE_REMOTE) HEAD:$(BRANCH) $(1)" && \
-	git push --tags $(PRIVATE_REMOTE) HEAD:$(BRANCH) && \
-	echo "git push --tags $(PUBLIC_REMOTE) HEAD:$(BRANCH) $(1)" && \
-	git push --tags $(PUBLIC_REMOTE) HEAD:$(BRANCH)
-endef
-
-check:
-	@echo "Check next release version: $(RELEASE_TAG)"
-
-branch:
-	@$(call branch,$(RELEASE_TAG),$(RC))
-
-bump:
-	@$(call bump_version,$(RELEASE_TAG))
-	@$(call tag,$(VERSION))
-
-publish: test
-	@$(call publish,$(RC))
-ifeq ($(RC),"")
-	@echo "npm publish $(2)";
-	@npm publish $(2)
-else
-	@echo "npm publish --tag $(2)"
-	@npm publish --tag $(2)
-endif
-
-release: check branch bump publish
-
-.PHONY: all latest install dev link doc clean uninstall test man doc-clean docclean release
+.PHONY: all install link doc clean uninstall test man release

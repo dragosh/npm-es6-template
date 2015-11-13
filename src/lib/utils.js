@@ -1,5 +1,6 @@
+// External
 import { random } from 'lodash/number'
+// Internal
 let log = (...args) => console.log.apply(console, args)
-let sum = (a, b) => a + b
-let multiply = (a, b) => a * b
-export { random, log , sum }
+let sum = (...args) => args.reduce( (prev, next) => prev + next );
+export { random, sum , log }
