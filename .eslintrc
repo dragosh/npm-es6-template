@@ -1,0 +1,14 @@
+---
+    rules:
+        eqeqeq: 0
+        curly: 2
+        quotes:
+            - 1
+            - "single"
+    env:
+        node: true
+        es6: true
+        mocha: true
+
+    ecmaFeatures:
+        modules: true
