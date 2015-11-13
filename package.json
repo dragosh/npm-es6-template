@@ -8,7 +8,9 @@
     "test": "make test",
     "build": "make build"
   },
-  "author": "${module.author}",
+  "author": [
+    "${module.author}"
+  ],
   "dependencies": {
 
   },
