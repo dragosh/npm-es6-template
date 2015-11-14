@@ -2,7 +2,7 @@
 import { expect, should } from 'chai'
 import { sum } from './utils'
 
-describe('Util sum', () => {
+describe('Utils sum', () => {
     it('should sum with on argument', () => {
         expect(sum(2)).to.equal(2);
     })
