@@ -32,5 +32,5 @@
     "test": "make test",
     "coverage": "make coverage",
     "build": "make build"
-  },
+  }
 }
