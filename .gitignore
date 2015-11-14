@@ -1,7 +1,7 @@
 __tmp
 pids
 logs
-results
+reports
 node_modules
 sandbox
 coverage

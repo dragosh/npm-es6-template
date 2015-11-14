@@ -1,24 +1,61 @@
 # vim: set softtabstop=4 shiftwidth=4:
+ MAKEFLAGS = -j1
+
 SHELL = bash
 BIN=./node_modules/.bin
+BABEL_SETUP = --presets es2015
+MOCHA_SETUP = --recursive --bail --require chai
+BABEL_NODE = $(BIN)/babel-node $(BABEL_SETUP)
+ISPARTA_CMD = $(BIN)/isparta cover --root src
+MOCHA_CMD = $(BIN)/_mocha
+IN = src/index.js
+OUT = dist/index.js
+MIN = dist/index.min.js
+SPECS = **/*[sS]pec.js
 
-install link:
-	@npm $@
+.PHONY: all install link doc clean uninstall test man release
+
 clean:
-	@npm cache clean
-	@rm -rf node_modules
 	@rm -rf dist
 
+clean-all: clean
+	@npm cache clean
+	@rm -rf node_modules
+
+lint:
+	@$(BIN)/eslint ./src
+coverage:
+	@$(BABEL_NODE) $(ISPARTA_CMD) \
+		--report text \
+		--report html \
+		--dir "reports/coverage" \
+		--excludes "$(SPECS)" \
+	$(MOCHA_CMD) -- src/$(SPECS) $(MOCHA_SETUP)
 test:
-	@$(BIN)/eslint ./src && \
-	$(BIN)/mocha --compilers js:babel-core/register --require chai \
-		--source-maps \
-		--colors \
-		--bail \
-		--reporter spec ./src/**/*.spec.js
+	@$(BABEL_NODE) $(MOCHA_CMD) $(MOCHA_SETUP) src/$(SPECS)
+
+start:
+	@$(BABEL_NODE) $(BABEL_SETUP) -- $(IN)
 
 build:
 	@mkdir -p ./dist && \
-	$(BIN)/browserify ./src/index.js  -t babelify --outfile ./dist/index.js
+	$(BIN)/browserify $(IN) \
+	--transform [ babelify $(BABEL_SETUP) ] \
+	--debug | $(BIN)/exorcist $(OUT).map > $(OUT) \
+	-o $(OUT)
 
-.PHONY: all install link doc clean uninstall test man release
+minify:
+	@$(BIN)/uglifyjs --compress --mangle -- $(OUT) > $(MIN)
+
+install link: clean-all
+	@npm $@
+
+deploy: lint coverage build minify verify
+
+
+publish:
+	@echo "@TODO : Publish"
+
+verify:
+	@echo "@TODO : Verify"
+
