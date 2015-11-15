@@ -41,13 +41,9 @@ start:
 
 build:
 	@mkdir -p ./dist && \
-	$(BIN)/browserify $(IN) \
-	--transform [ babelify $(BABEL_SETUP) ] \
-	--debug | $(BIN)/exorcist $(OUT).map > $(OUT) \
-	-o $(OUT)
-
-minify:
-	@$(BIN)/uglifyjs --compress --mangle -- $(OUT) > $(MIN)
+	$(BIN)/babel $(BABEL_SETUP) $(IN) \
+	-o $(OUT) \
+	--source-maps
 
 install link: clean-all
 	@npm $@
@@ -60,8 +56,8 @@ init:
 	commitizen init rb-conventional-changelog --save --force --save-exact && \
 	semantic-release-cli setup
 
+deploy: lint coverage build verify
 
-deploy: lint coverage build minify verify
 
 verify: lint coverage
 
