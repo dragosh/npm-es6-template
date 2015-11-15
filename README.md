@@ -2,7 +2,11 @@
 
 ${module.description}
 
+## Information
+
 ## Features
+
+## Example
 
 ## Install
 
