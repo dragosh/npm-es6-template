@@ -6,6 +6,7 @@ BIN=./node_modules/.bin
 BABEL_SETUP = --presets es2015
 MOCHA_SETUP = --recursive --bail --require chai
 BABEL_NODE = $(BIN)/babel-node $(BABEL_SETUP)
+REPO ?= ""
 ISPARTA_CMD = $(BIN)/isparta cover --root src
 MOCHA_CMD = $(BIN)/_mocha
 IN = src/index.js
@@ -24,6 +25,7 @@ clean-all: clean
 
 lint:
 	@$(BIN)/eslint ./src
+
 coverage:
 	@$(BABEL_NODE) $(ISPARTA_CMD) \
 		--report text \
@@ -50,12 +52,31 @@ minify:
 install link: clean-all
 	@npm $@
 
+init:
+	echo "Experimental"
+	@git init && git remote add origin $(REPO) && \
+	npm i -Dg husky commitizen semantic-release-cli && \
+	$(call save_package,$(REPO)) && \
+	commitizen init rb-conventional-changelog --save --force --save-exact && \
+	semantic-release-cli setup
+
+
 deploy: lint coverage build minify verify
 
+verify: lint coverage
 
 publish:
 	@echo "@TODO : Publish"
 
-verify:
-	@echo "@TODO : Verify"
+release:
+	@echo "@TODO : release"
 
+
+define save_package
+	node -e " var pck = require('./package.json'); \
+	pck.repository = { \
+		\"type\": \"git\", \
+		\"url\": \"$(1)\" \
+	}; \
+	require('fs').writeFileSync('./package.json', JSON.stringify(pck, null, 2));"
+endef
