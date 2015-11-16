@@ -6,12 +6,12 @@ BIN=./node_modules/.bin
 BABEL_SETUP = --presets es2015
 MOCHA_SETUP = --recursive --bail --require chai
 BABEL_NODE = $(BIN)/babel-node $(BABEL_SETUP)
+PACKAGE_NAME = $(shell node -pe "require('./package.json').name;")
 REPO ?= ""
 ISPARTA_CMD = $(BIN)/isparta cover --root src
 MOCHA_CMD = $(BIN)/_mocha
 IN = src/index.js
-OUT = dist/index.js
-MIN = dist/index.min.js
+OUT = dist/$(PACKAGE_NAME).js
 SPECS = **/*[sS]pec.js
 
 .PHONY: all install link doc clean uninstall test man release

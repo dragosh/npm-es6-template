@@ -4,7 +4,7 @@
   "version": "${module.version}",
   "jsnext:main": "src/index.js",
   "main": "dist/index.js",
-  "bin": "bin/cli.js",
+  "bin": "bin/${module.name}.js",
   "publishConfig":{
 
   },
