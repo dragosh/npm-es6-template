@@ -7,7 +7,8 @@ try {
         throw err
     }
     require('babel-core/register')({
-        'presets': 'es2015'
+        'presets': 'es2015',
+        'sourceMaps': 'inline'
     });
     require('../src')
 }
