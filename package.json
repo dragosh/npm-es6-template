@@ -17,10 +17,9 @@
       "type": "git",
       "url": ""
   },
-  "private": true,
   "dependencies": {},
   "devDependencies": {
-    "@dragosh/node-ally": "0.0.1-beta.0"
+    "@dragosh/node-ally": "0.0.1-beta.1"
   },
   "scripts": {
     "start": "make start",
