@@ -10,9 +10,10 @@ PACKAGE_NAME = $(shell node -pe "require('./package.json').name;")
 REPO ?= ""
 ISPARTA_CMD = $(BIN)/isparta cover --root src
 MOCHA_CMD = $(BIN)/_mocha
-IN = src/index.js
-OUT = dist/$(PACKAGE_NAME).js
+IN = src
+OUT = dist
 SPECS = **/*[sS]pec.js
+
 
 .PHONY: all install link doc clean uninstall test man release
 
@@ -40,9 +41,9 @@ start:
 	@$(BABEL_NODE) $(BABEL_SETUP) -- $(IN)
 
 build:
-	@mkdir -p ./dist && \
+	@mkdir -p  $(OUT) && \
 	$(BIN)/babel $(BABEL_SETUP) $(IN) \
-	-o $(OUT) \
+	--out-dir $(OUT) \
 	--source-maps
 
 install link: clean-all
@@ -57,7 +58,6 @@ init:
 	semantic-release-cli setup
 
 deploy: lint coverage build verify
-
 
 verify: lint coverage
 

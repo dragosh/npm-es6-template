@@ -1,7 +1,7 @@
-#!/usr/bin/env node node --harmony
+#!/usr/bin/env node --harmony
 
 try {
-    require('../dist')
+    require('../dist/cli')
 } catch (err) {
     if (err.code !== 'MODULE_NOT_FOUND') {
         throw err
@@ -10,5 +10,5 @@ try {
         'presets': 'es2015',
         'sourceMaps': 'inline'
     });
-    require('../src')
+    require('../src/cli')
 }
