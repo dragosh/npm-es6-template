@@ -19,7 +19,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@dragosh/node-ally": "0.0.1-beta.1"
+    "@dragosh/node-ally": "1.0.0"
   },
   "scripts": {
     "start": "make start",
