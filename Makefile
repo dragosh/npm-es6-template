@@ -18,7 +18,7 @@ SPECS = **/*[sS]pec.js
 .PHONY: all install link doc clean uninstall test man release
 
 clean:
-	@rm -rf dist
+	@rm -rf dist reports
 
 clean-all: clean
 	@npm cache clean
@@ -57,7 +57,7 @@ init:
 	commitizen init rb-conventional-changelog --save --force --save-exact && \
 	semantic-release-cli setup
 
-deploy: lint coverage build verify
+deploy: clean lint coverage build verify
 
 verify: lint coverage
 
